@@ -74,46 +74,46 @@ export interface Database {
       };
       conversations: {
         Row: {
-          analysis: string | null;
           answer: string | null;
-          cases: string[] | null;
           created_at: string;
           id: string;
           query: string;
           thread_id: string;
-          type: string;
           user_id: string;
-          jurisdiction: string[];
           chat_history: string | null;
-          documents: string[][] | null;
+          // cases: string[] | null;
+          // jurisdiction: string[];
+          // type: string;
+          // analysis: string | null;
+          // documents: string[][] | null;
         };
         Insert: {
-          analysis?: string | null;
+          // analysis?: string | null;
           answer?: string | null;
-          cases?: string[] | null;
+          // cases?: string[] | null;
           created_at?: string;
           id?: string;
           query: string;
           thread_id: string;
-          type?: string;
+          // type?: string;
           user_id?: string;
           chat_history?: string | null;
-          documents?: string[][] | null;
-          jurisdiction?: string[];
+          // documents?: string[][] | null;
+          // jurisdiction?: string[];
         };
         Update: {
-          analysis?: string | null;
+          // analysis?: string | null;
           answer?: string | null;
-          cases?: string[] | null;
+          // cases?: string[] | null;
           created_at?: string;
           id?: string;
           query?: string;
           thread_id?: string;
-          type?: string;
+          // type?: string;
           user_id?: string;
           chat_history?: string | null;
-          documents?: string[][] | null;
-          jurisdiction?: string[];
+          // documents?: string[][] | null;
+          // jurisdiction?: string[];
         };
         Relationships: [
           {
@@ -175,7 +175,7 @@ export interface Database {
           modified_at: string;
           title: string;
           user_id: string | null;
-          workspace_id: string;
+          // workspace_id: string;
         };
         Insert: {
           created_at?: string;
@@ -184,7 +184,7 @@ export interface Database {
           modified_at?: string;
           title?: string;
           user_id?: string | null;
-          workspace_id?: string;
+          // workspace_id?: string;
         };
         Update: {
           created_at?: string;
@@ -193,7 +193,7 @@ export interface Database {
           modified_at?: string;
           title?: string;
           user_id?: string | null;
-          workspace_id?: string;
+          // workspace_id?: string;
         };
         Relationships: [
           {

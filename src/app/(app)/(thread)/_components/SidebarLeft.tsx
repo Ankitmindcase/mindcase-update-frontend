@@ -8,7 +8,7 @@ import { Box, Flex, Text } from "@radix-ui/themes";
 import { createClient } from "@/lib/supabase/client";
 import { Times, cn, getLocalStorage } from "@/lib/utils";
 import { getWorkspaceId } from "@/lib/db/workspaces";
-import { createNewThread, getThreadsByWorkspace } from "@/lib/db/threads";
+import { createNewThread, getThreadsByWorkspace,getThreadsByUser } from "@/lib/db/threads";
 
 import {
   Select,
@@ -96,8 +96,11 @@ export function SidebarLeft() {
     const loadAllThreads = async () => {
       if (workspaceId) {
         setIsPending(true);
+        console.log("user", user);
         try {
-          const threads = await getThreadsByWorkspace(supabase, workspaceId);
+          const threads = await getThreadsByUser(supabase,user?.id ?? "");
+          console.log("threads", threads);
+          
           loadThreads(threads);
           loadFixedThreads(threads);
           if (threads.length === 0) {
@@ -131,8 +134,8 @@ export function SidebarLeft() {
     }
     if (user) {
       setNewThreadLoading(true);
-      const thread = await createNewThread(supabase, {
-        workspace_id: workspaceId,
+      const thread = await createNewThread(supabase,{
+        title:"New Thread",
       });
       if (!thread) {
         console.error("failed creating new thread");

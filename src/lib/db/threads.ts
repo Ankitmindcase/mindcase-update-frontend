@@ -27,25 +27,38 @@ export const getThreadsByWorkspace = async (
   return data ?? Array<Threads>();
 };
 
-export const getThreadsByURL = async (
+export const getThreadsByUser = async (
   supabase: SupabaseClient<Database>,
-  url: string
-): Promise<{ workspace_id: string | null; threads: Threads[] }> => {
-  console.log("getThreadsByURL");
-  const { data: workspace } = await supabase
-    .from("threads")
-    .select("workspace_id")
-    .eq("id", url)
-    .maybeSingle();
-  const workspace_id = workspace?.workspace_id || url;
+  user_id: string
+): Promise<Threads[]> => {
   const { data, error } = await supabase
     .from("threads")
     .select()
-    .eq("workspace_id", workspace_id)
+    .eq("user_id", user_id)
     .order("created_at", { ascending: false });
-  if (error) return { workspace_id: null, threads: Array<Threads>() };
-  return { workspace_id, threads: data ?? Array<Threads>() };
+  if (error) return Array<Threads>();
+  return data ?? Array<Threads>();
 };
+
+// export const getThreadsByURL = async (
+//   supabase: SupabaseClient<Database>,
+//   url: string
+// ): Promise<{ workspace_id: string | null; threads: Threads[] }> => {
+//   console.log("getThreadsByURL");
+//   const { data: workspace } = await supabase
+//     .from("threads")
+//     .select("workspace_id")
+//     .eq("id", url)
+//     .maybeSingle();
+//   const workspace_id = workspace?.workspace_id || url;
+//   const { data, error } = await supabase
+//     .from("threads")
+//     .select()
+//     .eq("workspace_id", workspace_id)
+//     .order("created_at", { ascending: false });
+//   if (error) return { workspace_id: null, threads: Array<Threads>() };
+//   return { workspace_id, threads: data ?? Array<Threads>() };
+// };
 
 export const getThreadById = async (
   supabase: SupabaseClient<Database>,
@@ -61,6 +74,19 @@ export const getThreadById = async (
 };
 
 export const createNewThread = async (
+  supabase: SupabaseClient<Database>,
+  params: Insert<"threads">
+): Promise<Threads | null> => {
+  const { data, error } = await supabase
+    .from("threads")
+    .insert([params])
+    .select()
+    .single();
+  if (error) return null;
+  return data;
+};
+
+export const createNewThreadByUser = async (
   supabase: SupabaseClient<Database>,
   params: Insert<"threads">
 ): Promise<Threads | null> => {

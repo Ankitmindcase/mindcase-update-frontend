@@ -91,11 +91,11 @@ export function ChatView() {
       insertConversation(supabase, {
         thread_id: newMessage.thread_id,
         query: newMessage.query,
-        type: "answer",
-        cases: newMessage.cases,
         answer: newMessage.answer,
-        analysis: newMessage.analysis,
-        documents: newMessage.documents,
+        // type: "answer",
+        // cases: newMessage.cases,
+        // analysis: newMessage.analysis,
+        // documents: newMessage.documents,
       })
         .then((resp) => console.log(`conversation inserted ${resp?.id}`))
         .catch((err) => console.log(`conversation error ${err.message}`));
@@ -109,16 +109,16 @@ export function ChatView() {
     const queryData: Conversations = {
       thread_id: thread,
       query: message,
-      type: "loading",
       answer: "",
-      analysis: "",
-      cases: null,
       id: "",
       user_id: "",
       created_at: "",
       chat_history: "",
-      documents: null,
-      jurisdiction: currentCourts,
+      // type: "loading",
+      // analysis: "",
+      // cases: null,
+      // documents: null,
+      // jurisdiction: currentCourts,
     };
 
     setStreaming(true);
@@ -133,7 +133,7 @@ export function ChatView() {
       setInput("");
     } else {
       const thread = await createNewThread(supabase, {
-        workspace_id: workspaceId,
+        title: inputString,
       });
       if (!thread) {
         console.error("failed creating new thread");
