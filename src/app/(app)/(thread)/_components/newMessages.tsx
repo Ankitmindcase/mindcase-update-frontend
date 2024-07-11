@@ -19,6 +19,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRootStore } from "@/providers/RootProvider";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { getActByIds } from "@/lib/db/acts";
+import { loadBindings } from "next/dist/build/swc";
 
 interface Props {
   message: Conversations | null;
@@ -67,21 +68,40 @@ export function NewChatMessage({ message, setMessage, setStreaming }: Props) {
         const thread = threads.find((t) => t.id === threadId) as Threads;
         try {
           setFetchingDoc(true);
-          const documents = await getDocuments({
-            message: message.query,
-            thread,
-            jurisdiction: message.jurisdiction,
-          });
-          await fetchDocuments(documents.documents);
-          setDocuments(documents.documents);
-          await getStream(
-            message.jurisdiction,
-            thread,
-            documents,
-            setGeneratedData,
-            setLoading,
-            setGeneratingResp
+          console.log("message",message);
+          
+          const postData = {
+            query: message.query,
+            chat_history: message.chat_history,
+          };
+          const res = await fetch(
+            "https://healthcare-production.up.railway.app/generate_response",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(postData),
+            }
           );
+          console.log("response", res); 
+          
+
+          // const documents = await getDocuments({
+          //   message: message.query,
+          //   thread,
+          //   // jurisdiction: message.jurisdiction,
+          // });
+          // await fetchDocuments(documents.documents);
+          // setDocuments(documents.documents);
+          // await getStream(
+          //   // message.jurisdiction,
+          //   thread,
+          //   documents,
+          //   setGeneratedData,
+          //   setLoading,
+          //   setGeneratingResp
+          // );
         } catch (e) {
           setGeneratedData(
             "Sorry, I didn't get that. Please try again, some error occured."
@@ -95,21 +115,21 @@ export function NewChatMessage({ message, setMessage, setStreaming }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!loading && message?.type === "loading") {
+    if (!loadBindings) {
       console.log("generated response", generatedData);
       setMessage((message) => ({
         answer: generatedData,
-        analysis: generatedData,
-        type: "answer",
-        cases: null,
-        documents: documents,
+        // analysis: generatedData,
+        // type: "answer",
+        // cases: null,
+        // documents: documents,
         id: message?.id || "",
         user_id: message?.user_id || "",
         created_at: message?.created_at || "",
         thread_id: message?.thread_id || "",
         query: message?.query || "",
         chat_history: chatHistory || "",
-        jurisdiction: message?.jurisdiction || [],
+        // jurisdiction: message?.jurisdiction || [],
       }));
       setStreaming(false);
     }
@@ -144,7 +164,7 @@ export function NewChatMessage({ message, setMessage, setStreaming }: Props) {
       </Box>
 
       <Box className="flex flex-col text-sm gap-6 px-3">
-        {fetchingDoc === undefined ? null : fetchingDoc ? (
+        {/* {fetchingDoc === undefined ? null : fetchingDoc ? (
           <AnimatedQueryStatus
             message="Fetching relevant documents..."
             loading={true}
@@ -154,7 +174,7 @@ export function NewChatMessage({ message, setMessage, setStreaming }: Props) {
             message="Fetching relevant documents..."
             loading={false}
           />
-        )}
+        )} */}
         {/* discovery cards */}
         {fetchingDoc === false ? (
           <Box className="transition-opacity duration-300 ease-in ml-14 flex flex-col overflow-hidden gap-2">

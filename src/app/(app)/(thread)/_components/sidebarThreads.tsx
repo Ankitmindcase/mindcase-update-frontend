@@ -34,7 +34,6 @@ interface Props {
 export function Thread({ thread, deleteIndicator }: Props) {
   const threadId = useSelectedLayoutSegment();
   const { setThreadHeadingIndicator } = useRootStore((state) => state);
-
   useEffect(() => {
     if (threadId === thread.id) {
       if (thread.title === "New thread") {
@@ -53,6 +52,7 @@ export function Thread({ thread, deleteIndicator }: Props) {
         threadId === thread.id && "bg-background shadow-sm"
       )}
     >
+      {/* <h1>diocisdbcsdjcsdvkjsd</h1> */}
       <Box className="flex-1 flex text-left">
         <Text size="2" className="line-clamp-1 font-medium">
           {thread.title === "New thread" ? (

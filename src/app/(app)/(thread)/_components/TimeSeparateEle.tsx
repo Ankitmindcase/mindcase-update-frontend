@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Thread } from "./sidebarThreads";
 import { Times, cn, maxRange } from "@/lib/utils";
 import { useRootStore } from "@/providers/RootProvider";
+import { log } from "console";
 
 interface Props {
   timeText: Times;
@@ -14,7 +15,6 @@ interface Props {
 export const TimeSeparatedThreads = ({ timeText = Times.Today }: Props) => {
   const today = new Date();
   const { threads, setNewThreadLoading } = useRootStore((state) => state);
-
   const couldMax = maxRange(timeText);
   const filteredThreads = threads.filter((t) => {
     const createdAt = new Date(t.modified_at);
@@ -27,7 +27,7 @@ export const TimeSeparatedThreads = ({ timeText = Times.Today }: Props) => {
     <div
       className={cn(
         "mr-4 flex-1 h-fit flex-col gap-1 mb-6",
-        filteredThreads.length ? "flex" : "hidden"
+        // filteredThreads.length ? "flex" : "hidden"
       )}
     >
       {threads.length > 0 && (
@@ -37,10 +37,10 @@ export const TimeSeparatedThreads = ({ timeText = Times.Today }: Props) => {
       )}
       <Flex direction="column" className="gap-0.5">
         <AnimatePresence>
-          {filteredThreads.length < 1 ? (
+          {threads.length < 1 ? (
             <Text className="text-center text-gray-400">No threads</Text>
           ) : (
-            filteredThreads.map((thread) => (
+            threads.map((thread) => (
               <motion.ul
                 layout
                 key={thread.id}

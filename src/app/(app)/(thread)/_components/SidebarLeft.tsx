@@ -96,7 +96,7 @@ export function SidebarLeft() {
     const loadAllThreads = async () => {
       if (workspaceId) {
         setIsPending(true);
-        console.log("user", user);
+        // console.log("user", user);
         try {
           const threads = await getThreadsByUser(supabase,user?.id ?? "");
           console.log("threads", threads);
@@ -348,10 +348,11 @@ export function SidebarLeft() {
 
             {!isPending && showAllThread && (
               <ScrollArea className="h-[calc(100vh-320px)] w-full pl-4 overflow-y-scroll">
+                {/* <h1>dcsdbc</h1> */}
                 <TimeSeparatedThreads timeText={Times.Today} />
-                <TimeSeparatedThreads timeText={Times.Yesterday} />
-                <TimeSeparatedThreads timeText={Times.ThisWeek} />
-                <TimeSeparatedThreads timeText={Times.BeforeThisWeek} />
+                {/* <TimeSeparatedThreads timeText={Times.Yesterday} /> */}
+                {/* <TimeSeparatedThreads timeText={Times.ThisWeek} /> */}
+                {/* <TimeSeparatedThreads timeText={Times.BeforeThisWeek} /> */}
               </ScrollArea>
             )}
           </Flex>
