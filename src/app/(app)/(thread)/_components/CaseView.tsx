@@ -179,7 +179,6 @@ export function ChatView() {
         <Loader2Icon className="w-6 h-auto animate-spin absolute top-[50%] left-[50%]" />
       ) : newThread ? (
         <Box className="h-full w-full mx-auto max-w-[800px] px-10">
-          <ChatNewThread setInput={setInput} />
         </Box>
       ) : (
         <ScrollArea className="max-h-full h-full w-full">

@@ -249,7 +249,7 @@ export function SidebarLeft() {
         {/* Workspace selection */}
         <Flex justify="between" align="center" className="p-4">
           <MainNav enableText={false} />
-          <Select value={workspaceId} onValueChange={handleWorkspaceChange}>
+          {/* <Select value={workspaceId} onValueChange={handleWorkspaceChange}>
             <SelectTrigger className="max-w-[70%] truncate self-end shadow-sm w-fit focus:ring-0 focus-visible:ring-0 font-medium text-md">
               <Box className=" flex space-x-2">
                 <FolderOpenIcon className="w-4 h-auto" />
@@ -274,7 +274,7 @@ export function SidebarLeft() {
               ))}
               <WorkspaceDialog />
             </SelectContent>
-          </Select>
+          </Select> */}
         </Flex>
 
         <div className="flex flex-col px-4 gap-y-4">
@@ -303,7 +303,7 @@ export function SidebarLeft() {
           </Flex>
 
           {/* Search bar */}
-          <Flex
+          {/* <Flex
             align="center"
             justify="center"
             className="w-full border-[1px] p-1 px-1.5 rounded-lg shadow-sm h-10 bg-background"
@@ -319,7 +319,7 @@ export function SidebarLeft() {
             <DropdownMenuShortcut className="font-bold bg-accent p-1 rounded-md">
               ⌘⇧E
             </DropdownMenuShortcut>
-          </Flex>
+          </Flex> */}
         </div>
 
         <div className="flex-1">

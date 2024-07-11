@@ -74,7 +74,7 @@ export default function Profile({
                         <Text
                           className={cn(
                             "whitespace-nowrap font-normal line-clamp-1 text-xs",
-                            user?.user_metadata.name.length ? "" : "text-md"
+                            // user?.user_metadata.name.length ? "" : "text-md"
                           )}
                         >
                           {user?.email?.length! > 26
