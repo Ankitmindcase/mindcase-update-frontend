@@ -11,11 +11,10 @@ import { createClient } from "@/lib/supabase/client";
 export default function AuthForm() {
   const { theme } = useTheme();
   const supabase = createClient();
-  const [currentUrl, setCurrentUrl] = useState("/");
 
-  useEffect(() => {
-    setCurrentUrl(new URL(window.location.href).origin + "/auth/callback");
-  }, []);
+  // useEffect(() => {
+  //   setCurrentUrl(new URL(window.location.href).origin + "/auth/callback");
+  // }, []);
 
   return (
     <Auth
@@ -23,7 +22,7 @@ export default function AuthForm() {
       view="sign_in"
       theme={theme}
       providers={["google"]}
-      redirectTo={`${currentUrl}`}
+      redirectTo={`/`}
       appearance={{
         theme: ThemeSupa,
         variables: {
