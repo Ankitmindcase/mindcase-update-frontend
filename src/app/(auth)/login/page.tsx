@@ -27,8 +27,8 @@ export default function AuthenticationPage() {
           <div className="relative mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">
-                &ldquo;Experience the power of AI with deep legal expertise and
-                intelligent workflows.&rdquo;
+                &ldquo;Experience the power of AI with deep Medical expertise
+                and intelligent workflows.&rdquo;
               </p>
             </blockquote>
           </div>

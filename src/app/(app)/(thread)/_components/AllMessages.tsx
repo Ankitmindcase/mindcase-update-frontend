@@ -9,11 +9,10 @@ import { Loader2Icon } from "lucide-react";
 
 interface Props {
   messages: Conversations[];
-  newMessage: Conversations | null;
+  newMessage: string | null;
   generatedData: string;
   load: boolean;
   setGeneratedData: Dispatch<SetStateAction<string>>;
-  setNewMessage: Dispatch<SetStateAction<Conversations | null>>;
   setStreaming: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -21,7 +20,6 @@ export function AllMessages({
   messages,
   newMessage,
   load,
-  setNewMessage,
   generatedData,
   setGeneratedData,
   setStreaming,
@@ -44,15 +42,15 @@ export function AllMessages({
       {newMessage ? (
         <NewChatMessage
           message={newMessage}
+          load={load}
           generatedData={generatedData}
           setGeneratedData={setGeneratedData}
-          setMessage={setNewMessage}
           setStreaming={setStreaming}
         />
       ) : null}
-      {load && (
+      {/* {load && (
         <Loader2Icon className="w-6 h-auto animate-spin absolute bottom-1 left-[10%]" />
-      )}
+      )} */}
       <Box ref={containerRef} />
     </Box>
   );

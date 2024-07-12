@@ -21,18 +21,18 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import { getActByIds } from "@/lib/db/acts";
 
 interface Props {
-  message: Conversations | null;
+  message: string | null;
   generatedData: string;
+  load: boolean;
   setGeneratedData: React.Dispatch<React.SetStateAction<string>>;
-  setMessage: React.Dispatch<React.SetStateAction<Conversations | null>>;
   setStreaming: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function NewChatMessage({
   message,
   generatedData,
+  load,
   setGeneratedData,
-  setMessage,
   setStreaming,
 }: Props) {
   const supabase = createClient();
@@ -47,72 +47,72 @@ export function NewChatMessage({
   const [cases, setCases] = useState<Cases[]>([]);
   const [acts, setActs] = useState<Acts[]>([]);
 
-  useEffect(() => {
-    const fetchDocuments = async (docs: string[][]) => {
-      const caseIds: string[] = [];
-      const actIds: string[] = [];
-      for (let index = 0; index < docs.length; index++) {
-        const d = docs[index];
-        if (d[1] === "Acts") {
-          !actIds.includes(d[0]) && actIds.push(d[0]);
-        } else if (d[1] === "Cases") {
-          !caseIds.includes(d[0]) && caseIds.push(d[0]);
-        }
-      }
+  // useEffect(() => {
+  //   const fetchDocuments = async (docs: string[][]) => {
+  //     const caseIds: string[] = [];
+  //     const actIds: string[] = [];
+  //     for (let index = 0; index < docs.length; index++) {
+  //       const d = docs[index];
+  //       if (d[1] === "Acts") {
+  //         !actIds.includes(d[0]) && actIds.push(d[0]);
+  //       } else if (d[1] === "Cases") {
+  //         !caseIds.includes(d[0]) && caseIds.push(d[0]);
+  //       }
+  //     }
 
-      const acts = await getActByIds(supabase, actIds);
-      const cases = await getCaseByIds(supabase, caseIds);
+  //     const acts = await getActByIds(supabase, actIds);
+  //     const cases = await getCaseByIds(supabase, caseIds);
 
-      setCases(cases);
-      setActs(acts);
-      setFetchingDoc(false);
-    };
+  //     setCases(cases);
+  //     setActs(acts);
+  //     setFetchingDoc(false);
+  //   };
 
-    // const getResponse = async () => {
-    //   if (message) {
-    //     setLoading(true);
-    //     const thread = threads.find((t) => t.id === threadId) as Threads;
-    //     try {
-    //       setFetchingDoc(true);
-    //       console.log("message", message);
+  //   // const getResponse = async () => {
+  //   //   if (message) {
+  //   //     setLoading(true);
+  //   //     const thread = threads.find((t) => t.id === threadId) as Threads;
+  //   //     try {
+  //   //       setFetchingDoc(true);
+  //   //       console.log("message", message);
 
-    //       const res = await fetch(
-    //         `http://localhost:8080/generate_response_med42_only?query=${message.query}&thread_id=${threadId}`,
-    //         {
-    //           method: "POST",
-    //           headers: {
-    //             "Content-Type": "application/json",
-    //           },
-    //         }
-    //       );
-    //       const resp = await res.json();
+  //   //       const res = await fetch(
+  //   //         `http://localhost:8080/generate_response_med42_only?query=${message.query}&thread_id=${threadId}`,
+  //   //         {
+  //   //           method: "POST",
+  //   //           headers: {
+  //   //             "Content-Type": "application/json",
+  //   //           },
+  //   //         }
+  //   //       );
+  //   //       const resp = await res.json();
 
-    //       // const documents = await getDocuments({
-    //       //   message: message.query,
-    //       //   thread,
-    //       //   // jurisdiction: message.jurisdiction,
-    //       // });
-    //       // await fetchDocuments(documents.documents);
-    //       // setDocuments(documents.documents);
-    //       // await getStream(
-    //       //   // message.jurisdiction,
-    //       //   thread,
-    //       //   documents,
-    //       //   setGeneratedData,
-    //       //   setLoading,
-    //       //   setGeneratingResp
-    //       // );
-    //     } catch (e) {
-    //       setGeneratedData(
-    //         "Sorry, I didn't get that. Please try again, some error occured."
-    //       );
-    //       setLoading(false);
-    //     }
-    //   }
-    // };
+  //   //       // const documents = await getDocuments({
+  //   //       //   message: message.query,
+  //   //       //   thread,
+  //   //       //   // jurisdiction: message.jurisdiction,
+  //   //       // });
+  //   //       // await fetchDocuments(documents.documents);
+  //   //       // setDocuments(documents.documents);
+  //   //       // await getStream(
+  //   //       //   // message.jurisdiction,
+  //   //       //   thread,
+  //   //       //   documents,
+  //   //       //   setGeneratedData,
+  //   //       //   setLoading,
+  //   //       //   setGeneratingResp
+  //   //       // );
+  //   //     } catch (e) {
+  //   //       setGeneratedData(
+  //   //         "Sorry, I didn't get that. Please try again, some error occured."
+  //   //       );
+  //   //       setLoading(false);
+  //   //     }
+  //   //   }
+  //   // };
 
-    // getResponse();
-  }, []);
+  //   // getResponse();
+  // }, []);
 
   // useEffect(() => {
   //   if (!loadBindings) {
@@ -143,7 +143,7 @@ export function NewChatMessage({
         containerRef.current.scrollIntoView({ behavior: "smooth" });
       }
     }, 0);
-  }, [documents, generatedData]);
+  }, [generatedData]);
 
   return (
     <Box className="h-full w-full flex flex-col gap-1">
@@ -159,7 +159,7 @@ export function NewChatMessage({
               {user?.email?.slice(0, 1).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <Label className="text-md font-medium">{message?.query}</Label>
+          <Label className="text-md font-medium">{message}</Label>
         </Box>
       </Box>
 
@@ -194,8 +194,7 @@ export function NewChatMessage({
           </Box>
         ) : null}
 
-        {generatinResp === undefined ? null : generatinResp &&
-          !generatedData.length ? (
+        {load && !generatedData.length ? (
           <AnimatedQueryStatus
             message="Generating response..."
             loading={true}

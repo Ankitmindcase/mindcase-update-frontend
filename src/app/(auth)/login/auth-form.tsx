@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 export default function AuthForm() {
   const { theme } = useTheme();
   const supabase = createClient();
-  const [currentUrl, setCurrentUrl] = useState("");
+  const [currentUrl, setCurrentUrl] = useState("/");
 
   useEffect(() => {
     setCurrentUrl(new URL(window.location.href).origin + "/auth/callback");

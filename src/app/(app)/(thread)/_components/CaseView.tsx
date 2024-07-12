@@ -16,9 +16,6 @@ import { Conversations } from "@/lib/db";
 import { createNewThread, updateThreadById } from "@/lib/db/threads";
 import { createClient } from "@/lib/supabase/client";
 import { useRootStore } from "@/providers/RootProvider";
-
-import { ChatNewThread } from "./chatNewThread";
-
 import { Loader2Icon } from "lucide-react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { AllMessages } from "./AllMessages";
@@ -46,7 +43,7 @@ export function ChatView() {
   const [generatedData, setGeneratedData] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [rootLoading, setRootLoading] = useState(false);
-  const [newMessage, setNewMessage] = useState<Conversations | null>(null);
+  const [newMessage, setNewMessage] = useState<string | null>(null);
   const [load, setLoad] = useState(false);
   // check if current thread is brand new or not
   useEffect(() => {
@@ -76,9 +73,9 @@ export function ChatView() {
     if (newMessage) {
       if (!currentThreadHeading) {
         const chat_heading = await getThreadHeading({
-          chat_history: newMessage.answer || newMessage.query,
+          chat_history: generatedData || newMessage,
         });
-        await updateThreadById(supabase, newMessage.thread_id, {
+        await updateThreadById(supabase, threadId, {
           title: chat_heading,
         });
         setNewThreadLoading(true);
@@ -90,9 +87,9 @@ export function ChatView() {
   useEffect(() => {
     if (!streaming && newMessage) {
       insertConversation(supabase, {
-        thread_id: newMessage.thread_id,
-        query: newMessage.query,
-        answer: newMessage.answer,
+        thread_id: threadId,
+        query: newMessage,
+        answer: generatedData,
         // type: "answer",
         // cases: newMessage.cases,
         // analysis: newMessage.analysis,
@@ -101,7 +98,9 @@ export function ChatView() {
         .then((resp) => console.log(`conversation inserted ${resp?.id}`))
         .catch((err) => console.log(`conversation error ${err.message}`));
       settingThreadHeadline();
-      loadMessages([...messages, newMessage]);
+      if (typeof newMessage === "object") {
+        loadMessages([...messages, newMessage]);
+      }
       setNewMessage(null);
     }
   }, [streaming]);
@@ -133,9 +132,8 @@ export function ChatView() {
       }
     );
     const resp = await res.json();
-    const data = await getConversationsByThread(supabase, thread);
-    console.log("data", data);
-    loadMessages(data);
+
+    setGeneratedData(resp);
     setLoad(false);
     // setGeneratedData(resp);
     // setStreaming(true);
@@ -146,7 +144,9 @@ export function ChatView() {
     console.log("handle submit", inputString);
 
     if (inputString.length === 0) return;
+    setNewMessage(inputString);
     setLoad(true);
+
     if (threadId) {
       newThread && setNewThread(false);
       sendMessage(inputString, threadId);
@@ -207,7 +207,6 @@ export function ChatView() {
               setGeneratedData={setGeneratedData}
               newMessage={newMessage}
               load={load}
-              setNewMessage={setNewMessage}
               setStreaming={setStreaming}
             />
           </Box>
