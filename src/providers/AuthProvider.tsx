@@ -39,7 +39,7 @@ export const AuthStoreProvider = ({ children }: Props) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [supabase.auth]);
 
   return (
     <AuthStoreContext.Provider value={storeRef.current}>
