@@ -8,7 +8,12 @@ import { Box, Flex, Text } from "@radix-ui/themes";
 import { createClient } from "@/lib/supabase/client";
 import { Times, cn, getLocalStorage } from "@/lib/utils";
 import { getWorkspaceId } from "@/lib/db/workspaces";
-import { createNewThread, getThreadsByWorkspace,getThreadsByUser } from "@/lib/db/threads";
+import * as Switch from "@radix-ui/react-switch";
+import {
+  createNewThread,
+  getThreadsByWorkspace,
+  getThreadsByUser,
+} from "@/lib/db/threads";
 
 import {
   Select,
@@ -62,6 +67,7 @@ export function SidebarLeft() {
   const { user } = useAuthStore((state) => state);
 
   const [sidebar, setSidebar] = useState(true);
+  const [checked, setChecked] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [showAllThread, setShowAllThread] = useState(true);
   const [isPending, setIsPending] = useState(true);
@@ -98,9 +104,9 @@ export function SidebarLeft() {
         setIsPending(true);
         // console.log("user", user);
         try {
-          const threads = await getThreadsByUser(supabase,user?.id ?? "");
+          const threads = await getThreadsByUser(supabase, user?.id ?? "");
           console.log("threads", threads);
-          
+
           loadThreads(threads);
           loadFixedThreads(threads);
           if (threads.length === 0) {
@@ -134,8 +140,8 @@ export function SidebarLeft() {
     }
     if (user) {
       setNewThreadLoading(true);
-      const thread = await createNewThread(supabase,{
-        title:"New Thread",
+      const thread = await createNewThread(supabase, {
+        title: "New Thread",
       });
       if (!thread) {
         console.error("failed creating new thread");
@@ -252,6 +258,23 @@ export function SidebarLeft() {
         {/* Workspace selection */}
         <Flex justify="between" align="center" className="p-4">
           <MainNav enableText={false} />
+          <div className="flex items-center">
+            <label
+              className="Label"
+              htmlFor="airplane-mode"
+              style={{ paddingRight: 15 }}
+            >
+              {!checked ? "api-1" : "api-2"}
+            </label>
+            <Switch.Root
+              checked={checked}
+              onCheckedChange={setChecked}
+              className="SwitchRoot"
+              id="airplane-mode"
+            >
+              <Switch.Thumb className="SwitchThumb" />
+            </Switch.Root>
+          </div>
           {/* <Select value={workspaceId} onValueChange={handleWorkspaceChange}>
             <SelectTrigger className="max-w-[70%] truncate self-end shadow-sm w-fit focus:ring-0 focus-visible:ring-0 font-medium text-md">
               <Box className=" flex space-x-2">
@@ -279,7 +302,6 @@ export function SidebarLeft() {
             </SelectContent>
           </Select> */}
         </Flex>
-
         <div className="flex flex-col px-4 gap-y-4">
           {/* New chat with collasp button */}
           <Flex className="w-full items-center rounded-md ">
@@ -324,7 +346,6 @@ export function SidebarLeft() {
             </DropdownMenuShortcut>
           </Flex> */}
         </div>
-
         <div className="flex-1">
           {/* Threads */}
           <Flex direction="column" align="center" className="flex-1">
@@ -338,14 +359,12 @@ export function SidebarLeft() {
                 className={`w-4 h-auto ${showAllThread ? "" : "rotate-180"}`}
               />
             </Toggle>
-
             {isPending && (
               <Box className="mt-4 flex flex-1 w-full h-full items-center justify-center">
                 <Loader2Icon size="16" className="mr-2 animate-spin" />
                 <Text size="3">Loading...</Text>
               </Box>
             )}
-
             {!isPending && showAllThread && (
               <ScrollArea className="h-[calc(100vh-320px)] w-full pl-4 overflow-y-scroll">
                 {/* <h1>dcsdbc</h1> */}
@@ -357,7 +376,6 @@ export function SidebarLeft() {
             )}
           </Flex>
         </div>
-
         <Box className="h-20 w-full border-t-[1px] flex items-center justify-center px-4">
           <Profile />
         </Box>
