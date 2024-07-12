@@ -19,7 +19,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useRootStore } from "@/providers/RootProvider";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { getActByIds } from "@/lib/db/acts";
-import { loadBindings } from "next/dist/build/swc";
 
 interface Props {
   message: Conversations | null;

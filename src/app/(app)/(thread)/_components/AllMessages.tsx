@@ -5,11 +5,13 @@ import { ChatMessages } from "./chatMessages";
 import { NewChatMessage } from "./newMessages";
 import { Conversations } from "@/lib/db";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Loader2Icon } from "lucide-react";
 
 interface Props {
   messages: Conversations[];
   newMessage: Conversations | null;
   generatedData: string;
+  load: boolean;
   setGeneratedData: Dispatch<SetStateAction<string>>;
   setNewMessage: Dispatch<SetStateAction<Conversations | null>>;
   setStreaming: Dispatch<SetStateAction<boolean>>;
@@ -18,6 +20,7 @@ interface Props {
 export function AllMessages({
   messages,
   newMessage,
+  load,
   setNewMessage,
   generatedData,
   setGeneratedData,
@@ -34,7 +37,7 @@ export function AllMessages({
   }, [messages]);
 
   return (
-    <Box className="h-full w-full flex flex-col py-4 gap-4">
+    <Box className="h-full w-full flex flex-col relative py-4 gap-4">
       {messages.map((message, index) => (
         <ChatMessages key={index} message={message} />
       ))}
@@ -47,6 +50,9 @@ export function AllMessages({
           setStreaming={setStreaming}
         />
       ) : null}
+      {load && (
+        <Loader2Icon className="w-6 h-auto animate-spin absolute bottom-1 left-[10%]" />
+      )}
       <Box ref={containerRef} />
     </Box>
   );

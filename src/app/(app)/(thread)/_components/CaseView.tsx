@@ -47,7 +47,7 @@ export function ChatView() {
   const [streaming, setStreaming] = useState(false);
   const [rootLoading, setRootLoading] = useState(false);
   const [newMessage, setNewMessage] = useState<Conversations | null>(null);
-
+  const [load, setLoad] = useState(false);
   // check if current thread is brand new or not
   useEffect(() => {
     if (!threadId || !messages.length) {
@@ -120,6 +120,9 @@ export function ChatView() {
       // documents: null,
       // jurisdiction: currentCourts,
     };
+    if (!thread) return;
+    console.log("send message", message, thread);
+    setLoad;
     const res = await fetch(
       `http://localhost:8080/generate_response_med42_only?query=${message}&thread_id=${thread}`,
       {
@@ -130,13 +133,20 @@ export function ChatView() {
       }
     );
     const resp = await res.json();
-    setGeneratedData(resp);
-    setStreaming(true);
-    setNewMessage(queryData);
+    const data = await getConversationsByThread(supabase, thread);
+    console.log("data", data);
+    loadMessages(data);
+    setLoad(false);
+    // setGeneratedData(resp);
+    // setStreaming(true);
+    // setNewMessage(queryData);
   };
 
-  const handleSubmit = useCallback(async (inputString: string) => {
+  const handleSubmit = async (inputString: string) => {
+    console.log("handle submit", inputString);
+
     if (inputString.length === 0) return;
+    setLoad(true);
     if (threadId) {
       newThread && setNewThread(false);
       sendMessage(inputString, threadId);
@@ -149,14 +159,13 @@ export function ChatView() {
         console.error("failed creating new thread");
         return;
       }
-      setNewThreadLoading(true);
       const localStorage = getLocalStorage();
       localStorage.setItem("message", inputString);
       // await new Promise((resolve) => setTimeout(resolve, 1000));
       // router.replace("/t/" + "thread.id");
-      // await sendMessage(inputString, thread.id);
+      await sendMessage(inputString, thread.id);
     }
-  }, []);
+  };
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -171,7 +180,7 @@ export function ChatView() {
       localStorage.removeItem("message");
       document.getElementById("querySubmitButton")?.click();
     }
-  }, [newThreadLoading, threadId, handleSubmit]);
+  }, [newThreadLoading, threadId]);
 
   return (
     <Box className="relative w-full h-full flex flex-col justify-end text-sm">
@@ -197,6 +206,7 @@ export function ChatView() {
               generatedData={generatedData}
               setGeneratedData={setGeneratedData}
               newMessage={newMessage}
+              load={load}
               setNewMessage={setNewMessage}
               setStreaming={setStreaming}
             />
@@ -208,10 +218,7 @@ export function ChatView() {
       {!rootLoading && (
         <Box className="relative px-8 flex flex-row items-center mx-auto w-full max-w-[800px] mb-6">
           <Box className="relative h-full m-2 shadow-lg rounded-lg flex w-full items-center border-[1px] border-gray-600">
-            <form
-              onSubmit={handleFormSubmit}
-              className="flex w-full items-center gap-2 px-1"
-            >
+            <form className="flex w-full items-center gap-2 px-1">
               <Textarea
                 autoFocus
                 id="message"
@@ -231,6 +238,7 @@ export function ChatView() {
                 type="submit"
                 size="icon"
                 className="mr-2"
+                // onClick={handleFormSubmit}
                 disabled={input.length === 0}
               >
                 <PaperAirplaneIcon className="w-4 h-auto" />
