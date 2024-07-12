@@ -24,6 +24,9 @@ interface RootProps {
 export default function RootLayout({ children }: RootProps) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+      </heda>
       <body>
         <AuthStoreProvider>
           <RootStoreProvider>
