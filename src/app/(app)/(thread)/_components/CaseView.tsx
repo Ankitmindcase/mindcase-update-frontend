@@ -124,7 +124,7 @@ export function ChatView() {
     console.log("send message", message, thread);
     setLoad;
     const res = await fetch(
-      `http://localhost:8080/generate_response_med42_only?query=${message}&thread_id=${thread}`,
+      `https://healthcare-production.up.railway.app/generate_response_med42_only?query=${message}&thread_id=${thread}`,
       {
         method: "POST",
         headers: {
