@@ -39,31 +39,31 @@ export function ChatMessages({ message }: Props) {
   const [cases, setCases] = useState<Cases[]>([]);
   const [acts, setActs] = useState<Acts[]>([]);
 
-  useEffect(() => {
-    const fetchCases = async (docs: string[][] | null) => {
-      if (!docs) return;
-      setLoadingDocs(true);
-      const caseIds: string[] = [];
-      const actIds: string[] = [];
-      for (let index = 0; index < docs.length; index++) {
-        const d = docs[index];
-        if (d[1] === "Acts") {
-          !actIds.includes(d[0]) && actIds.push(d[0]);
-        } else if (d[1] === "Cases") {
-          !caseIds.includes(d[0]) && caseIds.push(d[0]);
-        }
-      }
+  // useEffect(() => {
+  //   const fetchCases = async (docs: string[][] | null) => {
+  //     if (!docs) return;
+  //     setLoadingDocs(true);
+  //     const caseIds: string[] = [];
+  //     const actIds: string[] = [];
+  //     for (let index = 0; index < docs.length; index++) {
+  //       const d = docs[index];
+  //       if (d[1] === "Acts") {
+  //         !actIds.includes(d[0]) && actIds.push(d[0]);
+  //       } else if (d[1] === "Cases") {
+  //         !caseIds.includes(d[0]) && caseIds.push(d[0]);
+  //       }
+  //     }
 
-      const acts = await getActByIds(supabase, actIds);
-      const cases = await getCaseByIds(supabase, caseIds);
+  //     const acts = await getActByIds(supabase, actIds);
+  //     const cases = await getCaseByIds(supabase, caseIds);
 
-      setCases(cases);
-      setActs(acts);
-      setLoadingDocs(false);
-    };
+  //     setCases(cases);
+  //     setActs(acts);
+  //     setLoadingDocs(false);
+  //   };
 
-    message.documents?.length && fetchCases(message.documents);
-  }, []);
+  //   message.documents?.length && fetchCases(message.documents);
+  // }, []);
 
   return (
     <div className="flex flex-col">

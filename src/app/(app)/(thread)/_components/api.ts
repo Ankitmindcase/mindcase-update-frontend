@@ -36,9 +36,7 @@ export const updateChatHistory = async ({
     }),
   });
   const { chat_history } = (await response.json()) as { chat_history: string };
-  await updateConversationById(supabase, threadId, {
-    chat_history: chat_history,
-  });
+  await updateConversationById(supabase, threadId, {});
   return chat_history;
 };
 

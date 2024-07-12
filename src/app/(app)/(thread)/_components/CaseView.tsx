@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 import { Box, Text } from "@radix-ui/themes";
@@ -43,6 +43,7 @@ export function ChatView() {
 
   const [input, setInput] = useState("");
   const [newThread, setNewThread] = useState(true);
+  const [generatedData, setGeneratedData] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [rootLoading, setRootLoading] = useState(false);
   const [newMessage, setNewMessage] = useState<Conversations | null>(null);
@@ -113,19 +114,28 @@ export function ChatView() {
       id: "",
       user_id: "",
       created_at: "",
-      chat_history: "",
       // type: "loading",
       // analysis: "",
       // cases: null,
       // documents: null,
       // jurisdiction: currentCourts,
     };
-
+    const res = await fetch(
+      `http://localhost:8080/generate_response_med42_only?query=${message}&thread_id=${thread}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const resp = await res.json();
+    setGeneratedData(resp);
     setStreaming(true);
     setNewMessage(queryData);
   };
 
-  const handleSubmit = async (inputString: string) => {
+  const handleSubmit = useCallback(async (inputString: string) => {
     if (inputString.length === 0) return;
     if (threadId) {
       newThread && setNewThread(false);
@@ -146,7 +156,7 @@ export function ChatView() {
       // router.replace("/t/" + "thread.id");
       // await sendMessage(inputString, thread.id);
     }
-  };
+  }, []);
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -178,13 +188,14 @@ export function ChatView() {
       {rootLoading ? (
         <Loader2Icon className="w-6 h-auto animate-spin absolute top-[50%] left-[50%]" />
       ) : newThread ? (
-        <Box className="h-full w-full mx-auto max-w-[800px] px-10">
-        </Box>
+        <Box className="h-full w-full mx-auto max-w-[800px] px-10"></Box>
       ) : (
         <ScrollArea className="max-h-full h-full w-full">
           <Box className="h-full w-full mx-auto max-w-[800px] px-10">
             <AllMessages
               messages={messages}
+              generatedData={generatedData}
+              setGeneratedData={setGeneratedData}
               newMessage={newMessage}
               setNewMessage={setNewMessage}
               setStreaming={setStreaming}

@@ -37,7 +37,7 @@ export default function ThreadsLayout({}: { children: ReactNode }) {
         setWorkspaceId("260b11de-b226-473d-96ed-11f5ad4abd5b");
       }
     }
-  }, [workspaces]);
+  }, [setWorkspaceId, threadId, workspaceId, workspaces]);
 
   return (
     <Box className="h-full w-full flex relative">

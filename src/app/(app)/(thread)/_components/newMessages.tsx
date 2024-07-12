@@ -23,14 +23,21 @@ import { loadBindings } from "next/dist/build/swc";
 
 interface Props {
   message: Conversations | null;
+  generatedData: string;
+  setGeneratedData: React.Dispatch<React.SetStateAction<string>>;
   setMessage: React.Dispatch<React.SetStateAction<Conversations | null>>;
   setStreaming: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NewChatMessage({ message, setMessage, setStreaming }: Props) {
+export function NewChatMessage({
+  message,
+  generatedData,
+  setGeneratedData,
+  setMessage,
+  setStreaming,
+}: Props) {
   const supabase = createClient();
   const threadId = useSelectedLayoutSegment();
-  const [generatedData, setGeneratedData] = useState("");
   const [chatHistory, setChatHistory] = useState("");
   const [documents, setDocuments] = useState<string[][]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,78 +69,72 @@ export function NewChatMessage({ message, setMessage, setStreaming }: Props) {
       setFetchingDoc(false);
     };
 
-    const getResponse = async () => {
-      if (message) {
-        setLoading(true);
-        const thread = threads.find((t) => t.id === threadId) as Threads;
-        try {
-          setFetchingDoc(true);
-          console.log("message",message);
-          
-          const postData = {
-            query: message.query,
-            chat_history: message.chat_history,
-          };
-          const res = await fetch(
-            "https://healthcare-production.up.railway.app/generate_response",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(postData),
-            }
-          );
-          console.log("response", res); 
-          
+    // const getResponse = async () => {
+    //   if (message) {
+    //     setLoading(true);
+    //     const thread = threads.find((t) => t.id === threadId) as Threads;
+    //     try {
+    //       setFetchingDoc(true);
+    //       console.log("message", message);
 
-          // const documents = await getDocuments({
-          //   message: message.query,
-          //   thread,
-          //   // jurisdiction: message.jurisdiction,
-          // });
-          // await fetchDocuments(documents.documents);
-          // setDocuments(documents.documents);
-          // await getStream(
-          //   // message.jurisdiction,
-          //   thread,
-          //   documents,
-          //   setGeneratedData,
-          //   setLoading,
-          //   setGeneratingResp
-          // );
-        } catch (e) {
-          setGeneratedData(
-            "Sorry, I didn't get that. Please try again, some error occured."
-          );
-          setLoading(false);
-        }
-      }
-    };
+    //       const res = await fetch(
+    //         `http://localhost:8080/generate_response_med42_only?query=${message.query}&thread_id=${threadId}`,
+    //         {
+    //           method: "POST",
+    //           headers: {
+    //             "Content-Type": "application/json",
+    //           },
+    //         }
+    //       );
+    //       const resp = await res.json();
 
-    getResponse();
+    //       // const documents = await getDocuments({
+    //       //   message: message.query,
+    //       //   thread,
+    //       //   // jurisdiction: message.jurisdiction,
+    //       // });
+    //       // await fetchDocuments(documents.documents);
+    //       // setDocuments(documents.documents);
+    //       // await getStream(
+    //       //   // message.jurisdiction,
+    //       //   thread,
+    //       //   documents,
+    //       //   setGeneratedData,
+    //       //   setLoading,
+    //       //   setGeneratingResp
+    //       // );
+    //     } catch (e) {
+    //       setGeneratedData(
+    //         "Sorry, I didn't get that. Please try again, some error occured."
+    //       );
+    //       setLoading(false);
+    //     }
+    //   }
+    // };
+
+    // getResponse();
   }, []);
 
-  useEffect(() => {
-    if (!loadBindings) {
-      console.log("generated response", generatedData);
-      setMessage((message) => ({
-        answer: generatedData,
-        // analysis: generatedData,
-        // type: "answer",
-        // cases: null,
-        // documents: documents,
-        id: message?.id || "",
-        user_id: message?.user_id || "",
-        created_at: message?.created_at || "",
-        thread_id: message?.thread_id || "",
-        query: message?.query || "",
-        chat_history: chatHistory || "",
-        // jurisdiction: message?.jurisdiction || [],
-      }));
-      setStreaming(false);
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (!loadBindings) {
+  //     console.log("generated response", generatedData);
+  //     setMessage((message) => ({
+  //       answer: generatedData,
+  //       // analysis: generatedData,
+  //       // type: "answer",
+  //       // cases: null,
+  //       // documents: documents,
+  //       id: message?.id || "",
+  //       user_id: message?.user_id || "",
+  //       created_at: message?.created_at || "",
+  //       thread_id: message?.thread_id || "",
+  //       query: message?.query || "",
+  //       chat_history: chatHistory || "",
+  //       // jurisdiction: message?.jurisdiction || [],
+  //     }));
+  //     setStreaming(false);
+  //   }
+  // }, [loading]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 

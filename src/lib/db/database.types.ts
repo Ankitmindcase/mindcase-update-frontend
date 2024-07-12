@@ -80,7 +80,6 @@ export interface Database {
           query: string;
           thread_id: string;
           user_id: string;
-          chat_history: string | null;
           // cases: string[] | null;
           // jurisdiction: string[];
           // type: string;
@@ -97,7 +96,6 @@ export interface Database {
           thread_id: string;
           // type?: string;
           user_id?: string;
-          chat_history?: string | null;
           // documents?: string[][] | null;
           // jurisdiction?: string[];
         };
@@ -111,7 +109,6 @@ export interface Database {
           thread_id?: string;
           // type?: string;
           user_id?: string;
-          chat_history?: string | null;
           // documents?: string[][] | null;
           // jurisdiction?: string[];
         };
@@ -175,7 +172,7 @@ export interface Database {
           modified_at: string;
           title: string;
           user_id: string | null;
-          // workspace_id: string;
+          workspace_id: string;
         };
         Insert: {
           created_at?: string;

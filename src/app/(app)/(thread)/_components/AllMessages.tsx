@@ -9,6 +9,8 @@ import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 interface Props {
   messages: Conversations[];
   newMessage: Conversations | null;
+  generatedData: string;
+  setGeneratedData: Dispatch<SetStateAction<string>>;
   setNewMessage: Dispatch<SetStateAction<Conversations | null>>;
   setStreaming: Dispatch<SetStateAction<boolean>>;
 }
@@ -17,6 +19,8 @@ export function AllMessages({
   messages,
   newMessage,
   setNewMessage,
+  generatedData,
+  setGeneratedData,
   setStreaming,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,6 +41,8 @@ export function AllMessages({
       {newMessage ? (
         <NewChatMessage
           message={newMessage}
+          generatedData={generatedData}
+          setGeneratedData={setGeneratedData}
           setMessage={setNewMessage}
           setStreaming={setStreaming}
         />
