@@ -22,7 +22,6 @@ export default function AuthForm() {
       view="sign_in"
       theme={theme}
       providers={["google"]}
-      redirectTo={`/`}
       appearance={{
         theme: ThemeSupa,
         variables: {
