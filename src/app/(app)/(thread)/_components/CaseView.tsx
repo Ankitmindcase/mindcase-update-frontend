@@ -1,7 +1,7 @@
 "use client";
 
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
-import { useSelectedLayoutSegment } from "next/navigation";
+import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import { useSelectedLayoutSegment, useRouter } from "next/navigation";
 
 import { Box, Text } from "@radix-ui/themes";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,6 @@ export function ChatView({ checked }: { checked: boolean }) {
   const apiRoute = checked
     ? "generate_response_med42_only"
     : "generate_response_med42_llama3";
-  console.log(apiRoute, checked, 30);
   const supabase = createClient();
   const threadId = useSelectedLayoutSegment() as string;
   const {
@@ -41,7 +40,7 @@ export function ChatView({ checked }: { checked: boolean }) {
     setRightSidebarVisibility,
     rightSidebarVisible,
   } = useRootStore((state) => state);
-
+  const router = useRouter();
   const [input, setInput] = useState("");
   const [newThread, setNewThread] = useState(true);
   const [generatedData, setGeneratedData] = useState("");
@@ -51,7 +50,7 @@ export function ChatView({ checked }: { checked: boolean }) {
   const [load, setLoad] = useState(false);
   // check if current thread is brand new or not
   useEffect(() => {
-    if (!threadId || !messages.length) {
+    if (!threadId || !newMessage) {
       !newThread && setNewThread(true);
     } else {
       newThread && setNewThread(false);
@@ -125,7 +124,7 @@ export function ChatView({ checked }: { checked: boolean }) {
     };
     if (!thread) return;
     console.log("send message", message, thread);
-    setLoad;
+    setLoad(true);
     const res = await fetch(
       `https://healthcare-production.up.railway.app/${apiRoute}?query=${message}&thread_id=${thread}`,
       {
@@ -145,8 +144,6 @@ export function ChatView({ checked }: { checked: boolean }) {
   };
 
   const handleSubmit = async (inputString: string) => {
-    console.log("handle submit", inputString);
-
     if (inputString.length === 0) return;
     setNewMessage(inputString);
     setLoad(true);
@@ -165,14 +162,13 @@ export function ChatView({ checked }: { checked: boolean }) {
       }
       const localStorage = getLocalStorage();
       localStorage.setItem("message", inputString);
+      router.replace(`/${thread.id}`);
       // await new Promise((resolve) => setTimeout(resolve, 1000));
       // router.replace("/t/" + "thread.id");
-      await sendMessage(inputString, thread.id);
     }
   };
 
-  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleFormSubmit = (event: MouseEvent<HTMLButtonElement>) => {
     handleSubmit(input);
   };
 
@@ -180,9 +176,9 @@ export function ChatView({ checked }: { checked: boolean }) {
     const localStorage = getLocalStorage();
     let message = localStorage.getItem("message");
     if (message && !newThreadLoading && threadId) {
-      setInput(message);
+      setNewMessage(message);
       localStorage.removeItem("message");
-      document.getElementById("querySubmitButton")?.click();
+      sendMessage(input, threadId);
     }
   }, [newThreadLoading, threadId]);
 
@@ -238,10 +234,10 @@ export function ChatView({ checked }: { checked: boolean }) {
               />
               <Button
                 id="querySubmitButton"
-                type="submit"
                 size="icon"
                 className="mr-2"
-                // onClick={handleFormSubmit}
+                type="button"
+                onClick={handleFormSubmit}
                 disabled={input.length === 0}
               >
                 <PaperAirplaneIcon className="w-4 h-auto" />

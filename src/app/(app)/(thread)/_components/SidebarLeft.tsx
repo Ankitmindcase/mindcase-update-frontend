@@ -9,11 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Times, cn, getLocalStorage } from "@/lib/utils";
 import { getWorkspaceId } from "@/lib/db/workspaces";
 import * as Switch from "@radix-ui/react-switch";
-import {
-  createNewThread,
-  getThreadsByWorkspace,
-  getThreadsByUser,
-} from "@/lib/db/threads";
+import { createNewThread, getThreadsByUser } from "@/lib/db/threads";
 
 import {
   Select,
@@ -60,7 +56,6 @@ export function SidebarLeft({
   const threadId = useSelectedLayoutSegment();
 
   const {
-    workspaces,
     workspaceId,
     setWorkspaceId,
     newThreadLoading,
