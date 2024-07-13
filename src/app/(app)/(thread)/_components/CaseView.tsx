@@ -23,7 +23,11 @@ import { getThreadHeading } from "./api";
 import { cn, getLocalStorage } from "@/lib/utils";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 
-export function ChatView() {
+export function ChatView({ checked }: { checked: boolean }) {
+  const apiRoute = checked
+    ? "generate_response_med42_only"
+    : "generate_response_med42_llama3";
+  console.log(apiRoute, checked, 30);
   const supabase = createClient();
   const threadId = useSelectedLayoutSegment() as string;
   const {
@@ -123,7 +127,7 @@ export function ChatView() {
     console.log("send message", message, thread);
     setLoad;
     const res = await fetch(
-      `https://healthcare-production.up.railway.app/generate_response_med42_only?query=${message}&thread_id=${thread}`,
+      `https://healthcare-production.up.railway.app/${apiRoute}?query=${message}&thread_id=${thread}`,
       {
         method: "POST",
         headers: {

@@ -1,7 +1,7 @@
 "use client";
 
 import Fuse from "fuse.js";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 
 import { Box, Flex, Text } from "@radix-ui/themes";
@@ -48,7 +48,13 @@ import { useRootStore } from "@/providers/RootProvider";
 import { TimeSeparatedThreads } from "./TimeSeparateEle";
 import { WorkspaceDialog } from "./WorkspaceDialog";
 
-export function SidebarLeft() {
+export function SidebarLeft({
+  checked,
+  setChecked,
+}: {
+  checked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
+}) {
   const router = useRouter();
   const supabase = createClient();
   const threadId = useSelectedLayoutSegment();
@@ -67,7 +73,6 @@ export function SidebarLeft() {
   const { user } = useAuthStore((state) => state);
 
   const [sidebar, setSidebar] = useState(true);
-  const [checked, setChecked] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [showAllThread, setShowAllThread] = useState(true);
   const [isPending, setIsPending] = useState(true);
@@ -264,11 +269,11 @@ export function SidebarLeft() {
               htmlFor="airplane-mode"
               style={{ paddingRight: 15 }}
             >
-              {!checked ? "api-1" : "api-2"}
+              {!checked ? "V1" : "V2"}
             </label>
             <Switch.Root
               checked={checked}
-              onCheckedChange={setChecked}
+              onCheckedChange={() => setChecked((prev) => !prev)}
               className="SwitchRoot"
               id="airplane-mode"
             >

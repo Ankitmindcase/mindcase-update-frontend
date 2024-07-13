@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 import { Box } from "@radix-ui/themes";
@@ -13,6 +13,7 @@ import { useRootStore } from "@/providers/RootProvider";
 
 export default function ThreadsLayout({}: { children: ReactNode }) {
   const threadId = useSelectedLayoutSegment();
+  const [checked, setChecked] = useState(false);
   const { setWorkspaceId, workspaces, workspaceId } = useRootStore(
     (state) => state
   );
@@ -42,8 +43,8 @@ export default function ThreadsLayout({}: { children: ReactNode }) {
   return (
     <Box className="h-full w-full flex relative">
       {/* <UserDetailsForm /> */}
-      <SidebarLeft />
-      <ChatView />
+      <SidebarLeft checked={checked} setChecked={setChecked} />
+      <ChatView checked={checked} />
       {/* <SidebarRight /> */}
     </Box>
   );
